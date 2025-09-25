@@ -5,7 +5,14 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx watch src/server.ts"
+    "dev": "node --loader ts-node/esm src/server.ts",
+    "migrate:dev": "npx prisma migrate dev",
+    "generate": "npx prisma generate",
+    "rollback:dev": "npx prisma migrate reset",
+    "compile:seed": "tsc --outDir ./dist-seed --esModuleInterop --module NodeNext prisma/seed.ts",
+    "run:seed": "node ./dist-seed/seed.js",
+    "db:seed": "npm run compile:seed && npm run generate && npm run run:seed",
+    "clean:seed": "rm -rf ./dist-seed"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +26,9 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
+    "@types/node": "^24.5.2",
     "prisma": "^6.16.2",
+    "ts-node": "^10.9.2",
     "tsx": "^4.20.5"
   }
 }
