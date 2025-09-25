@@ -11,6 +11,19 @@ export async function simulacoesRouter(fastify: FastifyInstance, options: Fastif
     handler: controller.create.bind(controller),
   });
 
+
+  fastify.post('/simulacoes/projetar', {
+    handler: controller.create.bind(controller),
+  });
+
+  fastify.post('/simulacoes/duplicar/:id', {
+    handler: controller.create.bind(controller),
+  });
+
+  fastify.post('/simulacoes/historico', {
+    handler: controller.create.bind(controller),
+  });
+
   // Rota para buscar todas as simulações (READ ALL)
   fastify.get('/simulacoes', {
     handler: controller.readAll.bind(controller),
