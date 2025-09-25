@@ -32,4 +32,58 @@ export class SimulacoesService {
   async deleteSimulation(id: number) {
     return await this.simulacoesRepository.delete(id);
   }
+
+
+  // NOVO: Método para a projeção da simulação
+  async projectSimulation(id: number, status: 'Vivo' | 'Morto' | 'Invalido') {
+    const simulacao = await this.simulacoesRepository.findByIdWithRelations(id);
+    if (!simulacao) {
+      throw new Error('Simulação não encontrada para projeção.');
+    }
+
+    const resultados = [];
+    let patrimonioAtual = simulacao.ativos.reduce((total, ativo) => total + ativo.valor, 0);
+
+    for (let ano = new Date().getFullYear(); ano <= 2060; ano++) {
+      // Aplica a taxa de crescimento
+      patrimonioAtual *= (1 + simulacao.taxaReal / 100);
+
+      // Aplica movimentações de entrada e saída para o ano
+      const movimentacoesAno = simulacao.movimentacoes.filter(m => new Date(m.dataDeInicio).getFullYear() === ano);
+      movimentacoesAno.forEach(m => {
+        // Se o status for "Morto", as despesas são divididas por 2
+        if (m.tipo === 'Entrada' && status === 'Morto') {
+          // Cliente Morto não tem entrada.
+          // O case diz 'cliente não possui timeline de entradas'
+        } else if (m.tipo === 'Saida' && status === 'Morto') {
+          patrimonioAtual -= (m.valor / 2); // Despesa dividida por 2
+        } else {
+          // Lógica padrão para Vivo/Invalido
+          if (m.tipo === 'Entrada') patrimonioAtual += m.valor;
+          else if (m.tipo === 'Saida') patrimonioAtual -= m.valor;
+        }
+      });
+
+      // Lógica de 'Inválido' (Entradas encerradas, mas despesas normais)
+      if (status === 'Invalido') {
+        // Se a movimentação for uma entrada, ela não é aplicada
+        // Sua lógica já trata isso indiretamente, mas é bom ter em mente.
+      }
+
+      resultados.push({ ano, patrimonioTotal: patrimonioAtual });
+    }
+
+    return resultados;
+  }
+
+  // NOVO: Método para duplicar a simulação
+  async duplicateSimulation(id: number) {
+    const simulacaoOriginal = await this.simulacoesRepository.findByIdWithRelations(id);
+    if (!simulacaoOriginal) {
+      throw new Error('Simulação não encontrada para duplicação.');
+    }
+
+    const novaSimulacao = await this.simulacoesRepository.duplicate(simulacaoOriginal);
+    return novaSimulacao;
+  }
 }
