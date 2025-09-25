@@ -21,7 +21,7 @@ export async function movimentacaoRouter(fastify: FastifyInstance, options: Fast
   });
 
   // UPDATE: Atualiza uma movimentação
-  fastify.put('/movimentacoes/:id', {
+  fastify.patch('/movimentacoes/:id', {
     handler: controller.update.bind(controller),
   });
 
