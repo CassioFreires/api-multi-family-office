@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+// ----------------------------------------------------
+// Modelos do Projeto
+// ----------------------------------------------------
+
+// Tabela principal para as simulações e suas versões.
+model Simulacao {
+  id              Int             @id @default(autoincrement())
+  nome            String
+  dataDeInicio    DateTime
+  taxaReal        Float
+  status          String          // Ex: 'Vivo', 'Morto', 'Invalido'
+  isSituacaoAtual Boolean         @default(false)
+  isLegacy        Boolean         @default(false) // Para marcar versões antigas
+  
+  // Relacionamentos
+  ativos          Ativo[]
+  movimentacoes   Movimentacao[]
+  seguros         Seguro[]
+}
+
+// Tabela para alocações financeiras e imobilizadas
+model Ativo {
+  id              Int              @id @default(autoincrement())
+  nome            String
+  valor           Float
+  data            DateTime
+  tipo            String           // 'Financeiro' ou 'Imobilizado'
+  
+  // Opcionais para ativos Imobilizados
+  financiamento   Boolean?
+  parcelas        Int?
+  taxaDeJuros     Float?
+  valorDeEntrada  Float?
+  
+  // Relação com a simulação
+  simulacaoId     Int
+  simulacao       Simulacao        @relation(fields: [simulacaoId], references: [id], onDelete: Cascade)
+
+  // Relação com histórico
+  historicos      AtivoHistorico[] // 👈 Ajuste feito aqui
+}
+
+// Tabela para entradas e saídas (salário, despesas, etc.)
+model Movimentacao {
+  id              Int       @id @default(autoincrement())
+  tipo            String    // 'Entrada' ou 'Saida'
+  valor           Float
+  frequencia      String    // 'Unica', 'Mensal', 'Anual'
+  dataDeInicio    DateTime
+  dataDeFim       DateTime? // Opcional, para sequências de transações
+  
+  // Relação com a simulação
+  simulacaoId     Int
+  simulacao       Simulacao @relation(fields: [simulacaoId], references: [id], onDelete: Cascade)
+}
+
+// Tabela para registro de seguros (vida, invalidez)
+model Seguro {
+  id              Int       @id @default(autoincrement())
+  nome            String
+  dataDeInicio    DateTime
+  duracaoMeses    Int
+  premioMensal    Float
+  valorSegurado   Float
+  
+  // Relação com a simulação
+  simulacaoId     Int
+  simulacao       Simulacao @relation(fields: [simulacaoId], references: [id], onDelete: Cascade)
+}
+
+// ----------------------------------------------------
+// Tabela de Audit/Histórico - Exemplo
+// ----------------------------------------------------
+// Caso você queira registrar o histórico de um ativo
+model AtivoHistorico {
+  id           Int      @id @default(autoincrement())
+  ativoId      Int
+  valor        Float
+  dataRegistro DateTime @default(now())
+
+  ativo        Ativo    @relation(fields: [ativoId], references: [id], onDelete: Cascade)
+}

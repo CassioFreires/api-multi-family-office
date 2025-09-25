@@ -1,10 +1,14 @@
-import Fastify, { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import { FastifyInstance, FastifyPluginOptions, FastifyRequest, FastifyReply } from 'fastify';
 
-export async function simulacoesRouters(fastify:FastifyInstance, options:FastifyPluginOptions){
-    fastify.get('/simulacoes', async(req, res) => {
-        return {simulacoes: []}
-    })
+// O nome da função de plugin deve ser claro
+export async function simulacoesRouter(
+  fastify: FastifyInstance,
+  options: FastifyPluginOptions
+) {
+  fastify.get('/simulacoes', async (
+    request: FastifyRequest,
+    reply: FastifyReply
+  ) => {
+    return reply.send({data:[]})
+  });
 }
-
-
-
