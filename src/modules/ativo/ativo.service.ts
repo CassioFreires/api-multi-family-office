@@ -5,8 +5,8 @@ import { UpdateAtivoDTO } from './dto/update-ativo-dto.js';
 export class AtivoService {
   private ativoRepository: AtivoRepository;
 
-  constructor() {
-    this.ativoRepository = new AtivoRepository();
+  constructor(ativoRepository?:AtivoRepository) {
+    this.ativoRepository = ativoRepository ??  new AtivoRepository();
   }
 
   async createAtivo(data: CreateAtivoDTO) {

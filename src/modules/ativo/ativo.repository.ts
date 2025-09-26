@@ -1,6 +1,6 @@
-import { Prisma } from "../../generated/prisma/index.js";
 import { CreateAtivoDTO } from "./dto/create-ativo-dto.js";
 import prisma from "../../config/prisma.js";
+import { UpdateAtivoDTO } from "./dto/update-ativo-dto.js";
 
 
 export class AtivoRepository {
@@ -16,7 +16,7 @@ export class AtivoRepository {
     return await prisma.ativo.findUnique({ where: { id } });
   }
 
-  async update(id: number, data: Prisma.AtivoUpdateInput) {
+  async update(id: number, data: UpdateAtivoDTO) {
     return await prisma.ativo.update({ where: { id }, data });
   }
 
