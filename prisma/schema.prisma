@@ -13,21 +13,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 // ----------------------------------------------------
 // Modelos do Projeto
 // ----------------------------------------------------
 
 // Tabela principal para as simulações e suas versões.
 model Simulacao {
-  id              Int             @id @default(autoincrement())
+  id              Int            @id @default(autoincrement())
   nome            String
   dataDeInicio    DateTime
   taxaReal        Float
-  status          String          // Ex: 'Vivo', 'Morto', 'Invalido'
-  isSituacaoAtual Boolean         @default(false)
-  isLegacy        Boolean         @default(false) // Para marcar versões antigas
-  
+  status          String        // Ex: 'Vivo', 'Morto', 'Invalido'
+  isSituacaoAtual Boolean        @default(false)
+  isLegacy        Boolean        @default(false) // Para marcar versões antigas
+
+  // Novos campos de auditoria
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  deletedAt       DateTime?
+
   // Relacionamentos
   ativos          Ativo[]
   movimentacoes   Movimentacao[]
@@ -42,6 +46,11 @@ model Ativo {
   data            DateTime
   tipo            String           // 'Financeiro' ou 'Imobilizado'
   
+  // Novos campos de auditoria
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  deletedAt       DateTime?
+
   // Opcionais para ativos Imobilizados
   financiamento   Boolean?
   parcelas        Int?
@@ -53,7 +62,7 @@ model Ativo {
   simulacao       Simulacao        @relation(fields: [simulacaoId], references: [id], onDelete: Cascade)
 
   // Relação com histórico
-  historicos      AtivoHistorico[] // 👈 Ajuste feito aqui
+  historicos      AtivoHistorico[] 
 }
 
 // Tabela para entradas e saídas (salário, despesas, etc.)
@@ -65,6 +74,11 @@ model Movimentacao {
   dataDeInicio    DateTime
   dataDeFim       DateTime? // Opcional, para sequências de transações
   
+  // Novos campos de auditoria
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
   // Relação com a simulação
   simulacaoId     Int
   simulacao       Simulacao @relation(fields: [simulacaoId], references: [id], onDelete: Cascade)
@@ -79,6 +93,11 @@ model Seguro {
   premioMensal    Float
   valorSegurado   Float
   
+  // Novos campos de auditoria
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
   // Relação com a simulação
   simulacaoId     Int
   simulacao       Simulacao @relation(fields: [simulacaoId], references: [id], onDelete: Cascade)
@@ -89,10 +108,13 @@ model Seguro {
 // ----------------------------------------------------
 // Caso você queira registrar o histórico de um ativo
 model AtivoHistorico {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   ativoId      Int
   valor        Float
-  dataRegistro DateTime @default(now())
-
-  ativo        Ativo    @relation(fields: [ativoId], references: [id], onDelete: Cascade)
+  dataRegistro DateTime  @default(now())
+  
+  // Novos campos de auditoria (opcional para tabelas de histórico)
+  createdAt    DateTime  @default(now())
+  
+  ativo        Ativo     @relation(fields: [ativoId], references: [id], onDelete: Cascade)
 }
