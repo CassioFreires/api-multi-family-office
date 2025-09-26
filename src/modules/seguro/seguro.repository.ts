@@ -1,5 +1,3 @@
-
-import { Prisma } from "../../generated/prisma/index.js";
 import prisma from "../../config/prisma.js";
 import { CreateSeguroDTO } from "./dto/create-seguro-dto.js";
 import { UpdateSeguroDTO } from "./dto/update-seguro-dto.js";
