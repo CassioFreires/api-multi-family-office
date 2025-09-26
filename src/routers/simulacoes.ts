@@ -35,6 +35,10 @@ export async function simulacoesRouter(fastify: FastifyInstance, options: Fastif
     handler: controller.readOne.bind(controller),
   });
 
+  fastify.get('/simulacoes/situationActual', {
+    handler: controller.getSituationActual.bind(controller),
+  });
+
   // Rota para atualizar uma simulação (UPDATE)
   fastify.patch('/simulacoes/:id', {
     handler: controller.update.bind(controller),

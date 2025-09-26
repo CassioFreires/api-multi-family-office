@@ -99,7 +99,6 @@ export class SimulacoesController {
     }
   }
 
-  // Novo método para a Projeção
   async project(request: FastifyRequest, reply: FastifyReply) {
     try {
       // Valida os parâmetros de rota e o corpo da requisição
@@ -118,7 +117,6 @@ export class SimulacoesController {
     }
   }
 
-  // NOVO: Método para a Duplicação
   async duplicate(request: FastifyRequest, reply: FastifyReply) {
     try {
       const { id } = simulacaoParamsSchema.parse(request.params);
@@ -131,6 +129,17 @@ export class SimulacoesController {
       }
       // Erro de recurso não encontrado: 404 Not Found
       return reply.status(404).send({ message: 'Simulação não encontrada para duplicação.' });
+    }
+  }
+
+  async getSituationActual(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      // Aqui, você pode chamar um método no service para obter a situação atual.
+      const situationActual = await this.simulacoesService.generateSituationActual();
+      return reply.send(situationActual);
+    } catch (error: any) {
+      // Se houver um erro, retorne uma resposta de erro apropriada.
+      return reply.status(500).send({ message: 'Erro ao gerar a situação atual: ' + error.message });
     }
   }
 }

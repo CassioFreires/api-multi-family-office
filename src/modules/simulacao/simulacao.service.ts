@@ -76,7 +76,6 @@ export class SimulacoesService {
     return resultados;
   }
 
-  // NOVO: Método para duplicar a simulação
   async duplicateSimulation(id: number) {
     const simulacaoOriginal = await this.simulacoesRepository.findByIdWithRelations(id);
     if (!simulacaoOriginal) {
@@ -85,5 +84,27 @@ export class SimulacoesService {
 
     const novaSimulacao = await this.simulacoesRepository.duplicate(simulacaoOriginal);
     return novaSimulacao;
+  }
+  async generateSituationActual() {
+    const lastSimulation = await this.simulacoesRepository.findLast();
+
+    if (!lastSimulation) {
+      throw new Error('Nenhuma simulação encontrada para gerar a situação atual.');
+    }
+
+    const patrimonioTotal = lastSimulation.ativos.reduce((acc:any, ativo:any) => acc + ativo.valor, 0);
+
+    const movimentacoesFuturas = lastSimulation.movimentacoes.filter(
+      (m) => new Date(m.dataDeInicio) > new Date()
+    );
+
+    const situationActual = {
+      dataReferencia: new Date(),
+      patrimonioTotal: patrimonioTotal,
+      ativos: lastSimulation.ativos,
+      movimentacoesFuturas: movimentacoesFuturas,
+    };
+
+    return situationActual;
   }
 }

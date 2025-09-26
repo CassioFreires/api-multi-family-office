@@ -1,7 +1,6 @@
-import { Prisma } from "@prisma/client";
-import prisma from "../../config/prisma.js";
 import { CreateSimulacaoDto } from "./dto/create-simulacao.dto.js";
 import { UpdateSimulacaoDTO } from "./dto/update-simulacao.dto.js";
+import prisma from "../../config/prisma.js";
 
 export class SimulacoesRepository {
   async create(data: CreateSimulacaoDto) {
@@ -79,4 +78,16 @@ export class SimulacoesRepository {
       return novaSimulacao;
     });
   }
+
+async findLast() {
+  return await prisma.simulacao.findFirst({
+    orderBy:{
+      createdAt: 'desc'
+    },
+    include: {
+      ativos: true,
+      movimentacoes: true,
+    },
+  });
+}
 }
