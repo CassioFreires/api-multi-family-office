@@ -12,13 +12,14 @@ export async function simulacoesRouter(fastify: FastifyInstance, options: Fastif
   });
 
 
-  fastify.post('/simulacoes/projetar', {
-    handler: controller.create.bind(controller),
+  fastify.post('/simulacoes/duplicar/:id', {
+    handler: controller.duplicate.bind(controller),
   });
 
-  fastify.post('/simulacoes/duplicar/:id', {
-    handler: controller.create.bind(controller),
+  fastify.post('/simulacoes/projetar/:id', {
+    handler: controller.project.bind(controller),
   });
+
 
   fastify.post('/simulacoes/historico', {
     handler: controller.create.bind(controller),
