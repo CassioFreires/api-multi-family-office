@@ -35,7 +35,7 @@ export async function simulacoesRouter(fastify: FastifyInstance, options: Fastif
     handler: controller.readOne.bind(controller),
   });
 
-  fastify.get('/simulacoes/situationActual', {
+  fastify.get('/simulacoes/situacao-atual', {
     handler: controller.getSituationActual.bind(controller),
   });
 
