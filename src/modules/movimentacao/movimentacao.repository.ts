@@ -1,4 +1,3 @@
-import { Prisma } from '../../generated/prisma/index.js';
 import prisma from '../../config/prisma.js';
 import { CreateMovimentacaoDTO } from './dto/create-movimentacao-dto.js';
 import { UpdateMovimentacaoDTO } from './dto/update-movimentacao-dto.js';
