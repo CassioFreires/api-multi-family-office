@@ -9,13 +9,14 @@ import { ativoParamsSchema, AtivoParamsDTO } from './dto/read-ativo-dto.js';
 export class AtivoController {
     private ativoService: AtivoService;
 
-    constructor() {
-        this.ativoService = new AtivoService();
+    constructor(service?: AtivoService) {
+        this.ativoService = service ?? new AtivoService();
     }
+
 
     async create(request: FastifyRequest, reply: FastifyReply) {
         try {
-            const data:CreateAtivoDTO = createAtivoBodySchema.parse(request.body);
+            const data: CreateAtivoDTO = createAtivoBodySchema.parse(request.body);
             const ativo = await this.ativoService.createAtivo(data);
             return reply.status(201).send(ativo);
         } catch (error: any) {
@@ -32,14 +33,14 @@ export class AtivoController {
     async readAll(request: FastifyRequest, reply: FastifyReply) {
         const ativos = await this.ativoService.getAtivos();
         if (!ativos || ativos.length === 0) {
-            return reply.status(404).send({message: 'Não existe nenhum ativo!'});
+            return reply.status(404).send({ message: 'Não existe nenhum ativo!' });
         }
         return reply.send(ativos);
     }
 
     async readOne(request: FastifyRequest, reply: FastifyReply) {
         try {
-            const { id }:AtivoParamsDTO = ativoParamsSchema.parse(request.params);
+            const { id }: AtivoParamsDTO = ativoParamsSchema.parse(request.params);
             const ativo = await this.ativoService.getAtivoById(id);
             return reply.send(ativo);
         } catch (error: any) {
@@ -55,8 +56,8 @@ export class AtivoController {
 
     async update(request: FastifyRequest, reply: FastifyReply) {
         try {
-            const { id }:AtivoParamsDTO = ativoParamsSchema.parse(request.params);
-            const data:UpdateAtivoDTO = updateAtivoBodySchema.parse(request.body);
+            const { id }: AtivoParamsDTO = ativoParamsSchema.parse(request.params);
+            const data: UpdateAtivoDTO = updateAtivoBodySchema.parse(request.body);
             const ativo = await this.ativoService.updateAtivo(id, data);
             return reply.send(ativo);
         } catch (error: any) {
@@ -72,7 +73,7 @@ export class AtivoController {
 
     async delete(request: FastifyRequest, reply: FastifyReply) {
         try {
-            const { id }:AtivoParamsDTO = ativoParamsSchema.parse(request.params);
+            const { id }: AtivoParamsDTO = ativoParamsSchema.parse(request.params);
             await this.ativoService.deleteAtivo(id);
             return reply.status(204).send(); // No Content
         } catch (error: any) {
