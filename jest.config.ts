@@ -7,6 +7,12 @@ const config: Config = {
   // Trata .ts como ESM
   extensionsToTreatAsEsm: ['.ts'],
 
+  testMatch: [
+    '**/tests/unit/**/*.spec.ts',
+    '**/tests/integration/**/*.spec.ts'
+  ],
+
+
   // Mapeia imports que terminam com .js para funcionarem em TypeScript
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',

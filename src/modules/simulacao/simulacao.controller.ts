@@ -7,7 +7,6 @@ import { createSimulacaoSchema } from './dto/create-simulacao.dto.js';
 import { updateSimulacaoBodySchema } from './dto/update-simulacao.dto.js';
 import { SimulacaoParamsDTO, simulacaoParamsSchema } from './dto/read-simulacao.dto.js';
 import { projectBodySchema } from './dto/project-simulacao.dto.js';
-// Schema para a projeção
 
 
 

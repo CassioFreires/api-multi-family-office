@@ -6,13 +6,15 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "migrate:dev": "npx prisma migrate dev",
+    "migrate:test": "cross-env DATABASE_URL=postgresql://postgres:Freires2%40@localhost:5432/multi-family-office-test npx prisma migrate reset --force --skip-seed",
     "generate": "npx prisma generate",
     "rollback:dev": "npx prisma migrate reset",
     "compile:seed": "tsc --outDir ./dist-seed --esModuleInterop --module NodeNext prisma/seed.ts",
     "run:seed": "node ./dist-seed/seed.js",
     "db:seed": "npm run compile:seed && npm run generate && npm run run:seed",
     "clean:seed": "rm -rf ./dist-seed",
-     "test": "node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js",
+    "test": "node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js",
+    "test:integration": "node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js src/tests/integration/",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },
@@ -22,6 +24,7 @@
   "description": "",
   "dependencies": {
     "@prisma/client": "^6.16.2",
+    "dotenv": "^17.2.2",
     "fastify": "^5.6.1",
     "zod": "^4.1.11"
   },
@@ -29,6 +32,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^24.5.2",
     "@types/supertest": "^6.0.3",
+    "cross-env": "^10.0.0",
     "jest": "^30.1.3",
     "nodemon": "^3.1.10",
     "prisma": "^6.16.2",
